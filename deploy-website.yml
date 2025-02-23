@@ -1,0 +1,41 @@
+---
+- name: Deploy Portfolio Website
+  hosts: localhost
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name: 
+          - git
+          - docker.io
+        state: present
+        update_cache: yes
+
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Clone GitHub repository
+      git:
+        repo: "https://github.com/mactope/portfolio-website.git"
+        dest: "/home/ubuntu/portfolio-website"
+        version: main
+        force: yes
+
+    - name: Build Docker image
+      command: docker build -t prashunnaral-website .
+      args:
+        chdir: "/home/ubuntu/portfolio-website"
+
+    - name: Stop existing container (if running)
+      command: docker rm -f prashunnaral-website
+      ignore_errors: yes
+
+    - name: Run Docker container
+      command: docker run -d -p 8080:80 --name prashunnaral-website prashunnaral-website
