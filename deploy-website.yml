@@ -38,4 +38,4 @@
       ignore_errors: yes
 
     - name: Run Docker container
-      command: docker run -d -p 8080:80 --name prashunnaral-website prashunnaral-website
+      command: docker run -d -p 9090:80 --name prashunnaral-website prashunnaral-website
